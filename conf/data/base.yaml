@@ -1,0 +1,6 @@
+name: adult
+data_path: data/adult.csv
+target_column: class
+categorical_encoder: ordinal # ordinal, onehot
+continuous_encoder: null # standard, minmax
+test_size: 0.2
