@@ -7,3 +7,4 @@ pandas
 seaborn
 tqdm
 LORE-ext
+hydra-core
