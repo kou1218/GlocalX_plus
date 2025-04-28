@@ -227,3 +227,4 @@ dmypy.json
 # custom
 /data/
 outputs/
+.github/
