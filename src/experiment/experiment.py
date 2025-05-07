@@ -13,6 +13,8 @@ from sklearn.ensemble import RandomForestClassifier
 import src.dataset as dataset
 from src.dataset import TabularDataFrame
 from src.rule.rule_extraction import BaseRuleExtractor
+from src.rule.rules import lore_to_glocalx
+from src.glocalx import GLocalX
 
 # from .classifier import get_classifier
 # from .optuna import OptimParam
@@ -48,6 +50,7 @@ class ExpBase:
         self.df = self.dataframe.data
 
         self.rule_extractor = BaseRuleExtractor(self.df, self.target_column)
+        self.glocalx = GLocalX()
 
         # Onehotter for MLP in ReRx
         # if self.model_name == "rerx":
@@ -66,13 +69,19 @@ class ExpBase:
         ...
 
     def run(self):
-        print(f"check: {self.dataframe}")
-        print(f"target_column: {self.target_column}")
+        bb_name = "RandomForestClassifier"
+        if bb_name == "RandomForestClassifier":
+            bb = RandomForestClassifier(n_estimators=100, random_state=self.seed)
+        elif bb_name == "DecisionTreeClassifier":
+            bb = DecisionTreeClassifier(random_state=self.seed)
 
-        
-        local_rules = self.rule_extractor.extract_rules()
-        for rule in local_rules:
-            print(rule)
+
+        self.glocalx = GLocalX( model_ai=bb)
+        self.glocalx.fit(self.rule_extractor)
+        alpha = 10
+        global_explanations = self.glocalx.get_fine_boundary_alpha(alpha)
+        print(len(global_explanations))
+
 
     def get_model_config(self, *args, **kwargs):
         raise NotImplementedError()
